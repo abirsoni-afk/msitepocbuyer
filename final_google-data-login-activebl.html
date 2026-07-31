@@ -725,7 +725,7 @@
 //
 // Problem: This app uses TanStack Start (SSR framework). Two things break:
 //   1. window.$_TSR (server-injected hydration payload) is missing -> invariant
-//   2. Router sees URL /msitepocbuyer/final_google-data-login-activebl.html
+//   2. Router sees URL /msitepocbuyer/final_...html
 //      instead of /browsing -> matchRoutes() returns [] -> s[1] missing -> invariant
 //
 // Fix: stub $_TSR + redirect URL to /browsing before the app module loads.
