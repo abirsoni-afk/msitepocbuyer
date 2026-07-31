@@ -721,11 +721,16 @@
 </div>
 <div class="ghw-toast" id="ghwLimitToast">You can compare up to 2 sellers at a time</div>
 </div><!--/$--><script>
-// TanStack Start hydration stub.
-// window.$_TSR is normally injected by the server during SSR.
-// Without it the router throws "Invariant failed".
-// This stub allows the app to fall back to client-side routing.
+// TanStack Start hydration fix for static GitHub Pages hosting.
+//
+// Problem: This app uses TanStack Start (SSR framework). Two things break:
+//   1. window.$_TSR (server-injected hydration payload) is missing -> invariant
+//   2. Router sees URL /msitepocbuyer/final_google-data-login-activebl.html
+//      instead of /browsing -> matchRoutes() returns [] -> s[1] missing -> invariant
+//
+// Fix: stub $_TSR + redirect URL to /browsing before the app module loads.
 (function(){
+  // 1. Provide the SSR hydration payload stub
   window.$_TSR = {
     buffer: [],
     initialized: false,
@@ -737,6 +742,15 @@
       dehydratedData: null
     }
   };
+
+  // 2. Make the router match the app's expected route (/browsing)
+  //    by changing the browser URL before the module boots.
+  //    history.replaceState does NOT cause a page reload.
+  try {
+    if (window.location.pathname !== '/browsing') {
+      history.replaceState(null, '', '/browsing');
+    }
+  } catch(e) { console.warn('Could not set path:', e); }
 })();
 </script>
 <script type="module" async="" src="./browsing_files/index-DCeeaYLK.js"></script>
