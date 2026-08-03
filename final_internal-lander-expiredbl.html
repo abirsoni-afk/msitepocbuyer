@@ -552,7 +552,40 @@
 </div>
 </div>
 <div class="ghw-toast" id="ghwLimitToast">You can compare up to 2 sellers at a time</div>
-</div><!--/$--><script async="" src="./browsing_files/index-DCeeaYLK.js" type="module"></script>
+</div><!--/$--><script>
+// TanStack Start hydration fix for static GitHub Pages hosting.
+//
+// Problem: This app uses TanStack Start (SSR framework). Two things break:
+//   1. window.$_TSR (server-injected hydration payload) is missing -> invariant
+//   2. Router sees URL /msitepocbuyer/final_...html
+//      instead of /browsing -> matchRoutes() returns [] -> s[1] missing -> invariant
+//
+// Fix: stub $_TSR + redirect URL to /browsing before the app module loads.
+(function(){
+  // 1. Provide the SSR hydration payload stub
+  window.$_TSR = {
+    buffer: [],
+    initialized: false,
+    h: function(){},
+    router: {
+      matches: [],
+      lastMatchId: null,
+      manifest: null,
+      dehydratedData: null
+    }
+  };
+
+  // 2. Make the router match the app's expected route (/browsing)
+  //    by changing the browser URL before the module boots.
+  //    history.replaceState does NOT cause a page reload.
+  try {
+    if (window.location.pathname !== '/browsing') {
+      history.replaceState(null, '', '/browsing');
+    }
+  } catch(e) { console.warn('Could not set path:', e); }
+})();
+</script>
+<script async="" src="./browsing_files/index-DCeeaYLK.js" type="module"></script>
 <aside aria-label="Edit with Lovable" dir="ltr" id="lovable-badge" lang="en" role="complementary">
 <a aria-label="Edit with Lovable" href="https://lovable.dev/projects/lovp_5mwx2sv2w18ed8j52k5f718khz?utm_source=lovable-badge" id="lovable-badge-cta" rel="noopener nofollow" target="_blank">
 <span id="lovable-badge-text">Edit with</span>
